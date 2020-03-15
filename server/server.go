@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/SeijiOmi/posts-service/controller"
+	"github.com/SeijiOmi/points-service/controller"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -9,7 +9,7 @@ import (
 // Init is initialize server
 func Init() {
 	r := router()
-	r.Run(":8090")
+	r.Run(":9000")
 }
 
 func router() *gin.Engine {
@@ -40,7 +40,7 @@ func router() *gin.Engine {
 		},
 	}))
 
-	p := r.Group("/posts")
+	p := r.Group("/points")
 	{
 		p.GET("", controller.Index)
 		p.GET("/:id", controller.Show)

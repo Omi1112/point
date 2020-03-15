@@ -8,8 +8,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/SeijiOmi/posts-service/db"
-	"github.com/SeijiOmi/posts-service/entity"
+	"github.com/SeijiOmi/points-service/db"
+	"github.com/SeijiOmi/points-service/entity"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -64,7 +64,7 @@ func TestPostCreate(t *testing.T) {
 		"tests",
 	}
 	input, _ := json.Marshal(inputPost)
-	resp, _ := http.Post(testServer.URL+"/posts", "application/json", bytes.NewBuffer(input))
+	resp, _ := http.Post(testServer.URL+"/points", "application/json", bytes.NewBuffer(input))
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 }
 
@@ -77,7 +77,7 @@ func TestPostCreateNumericErrValid(t *testing.T) {
 		"tests",
 	}
 	input, _ := json.Marshal(inputPost)
-	resp, _ := http.Post(testServer.URL+"/posts", "application/json", bytes.NewBuffer(input))
+	resp, _ := http.Post(testServer.URL+"/points", "application/json", bytes.NewBuffer(input))
 	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 }
 
@@ -90,7 +90,7 @@ func TestPostCreateMinusErrValid(t *testing.T) {
 		-1,
 	}
 	input, _ := json.Marshal(inputPost)
-	resp, _ := http.Post(testServer.URL+"/posts", "application/json", bytes.NewBuffer(input))
+	resp, _ := http.Post(testServer.URL+"/points", "application/json", bytes.NewBuffer(input))
 	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 }
 

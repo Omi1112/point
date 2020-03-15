@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/SeijiOmi/posts-service/entity"
+	"github.com/SeijiOmi/points-service/entity"
 	"github.com/jinzhu/gorm"
 
 	// gormのmysql接続用インポート

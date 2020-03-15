@@ -8,11 +8,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/SeijiOmi/posts-service/entity"
-	"github.com/SeijiOmi/posts-service/service"
+	"github.com/SeijiOmi/points-service/entity"
+	"github.com/SeijiOmi/points-service/service"
 )
 
-// Index action: GET /posts
+// Index action: GET /points
 func Index(c *gin.Context) {
 	var b service.Behavior
 	p, err := b.GetAllWithUserData()
@@ -25,7 +25,7 @@ func Index(c *gin.Context) {
 	}
 }
 
-// Create action: POST /posts
+// Create action: POST /points
 func Create(c *gin.Context) {
 	var inputPost entity.Post
 	if err := bindJSON(c, &inputPost); err != nil {
@@ -50,7 +50,7 @@ func Create(c *gin.Context) {
 	}
 }
 
-// Show action: GET /posts/:id
+// Show action: GET /points/:id
 func Show(c *gin.Context) {
 	id := c.Params.ByName("id")
 	var b service.Behavior
@@ -64,7 +64,7 @@ func Show(c *gin.Context) {
 	}
 }
 
-// Update action: PUT /posts/:id
+// Update action: PUT /points/:id
 func Update(c *gin.Context) {
 	id := c.Params.ByName("id")
 	var inputPost entity.Post
@@ -83,7 +83,7 @@ func Update(c *gin.Context) {
 	}
 }
 
-// Delete action: DELETE /posts/:id
+// Delete action: DELETE /points/:id
 func Delete(c *gin.Context) {
 	id := c.Params.ByName("id")
 	var b service.Behavior

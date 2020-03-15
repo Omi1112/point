@@ -5,7 +5,7 @@ services:
     # links:
     #   - mysql
     image: zemisemi/gin-template
-    working_dir: /go/src/github.com/SeijiOmi/posts-service
+    working_dir: /go/src/github.com/SeijiOmi/points-service
     # entrypoint:
     #   - dockerize
     #   - -timeout
@@ -19,7 +19,7 @@ services:
     ports:
       - "9000:9000"
     volumes:
-      - .:/go/src/github.com/SeijiOmi/posts-service
+      - .:/go/src/github.com/SeijiOmi/points-service
     environment:
       DB_USER: root
       DB_PASSWORD: password

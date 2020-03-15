@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/SeijiOmi/posts-service/db"
-	"github.com/SeijiOmi/posts-service/server"
+	"github.com/SeijiOmi/points-service/db"
+	"github.com/SeijiOmi/points-service/server"
 )
 
 func main() {

@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/SeijiOmi/posts-service/db"
-	"github.com/SeijiOmi/posts-service/entity"
+	"github.com/SeijiOmi/points-service/db"
+	"github.com/SeijiOmi/points-service/entity"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -53,9 +53,9 @@ func TestGetAll(t *testing.T) {
 	createDefaultPost(1, 0)
 
 	var b Behavior
-	posts, err := b.GetAll()
+	points, err := b.GetAll()
 	assert.Equal(t, err, nil)
-	assert.Equal(t, len(posts), 2)
+	assert.Equal(t, len(points), 2)
 }
 
 func TestGetByHelperUserID(t *testing.T) {
@@ -64,20 +64,20 @@ func TestGetByHelperUserID(t *testing.T) {
 	createDefaultPost(1, 2)
 
 	var b Behavior
-	posts, err := b.GetByHelperUserID("1")
+	points, err := b.GetByHelperUserID("1")
 	assert.Equal(t, nil, err)
-	assert.Equal(t, 1, len(posts))
+	assert.Equal(t, 1, len(points))
 }
 
 func TestAttachUserData(t *testing.T) {
 	initPostTable()
 	post := createDefaultPost(1, 0)
-	var posts []entity.Post
-	posts = append(posts, post)
+	var points []entity.Post
+	points = append(points, post)
 
-	postsWithUser, err := attachUserData(posts)
+	pointsWithUser, err := attachUserData(points)
 	assert.Equal(t, nil, err)
-	assert.NotEqual(t, "", postsWithUser[0].User.Name)
+	assert.NotEqual(t, "", pointsWithUser[0].User.Name)
 }
 
 func TestGetByHelperUserIDWithUserData(t *testing.T) {
@@ -86,10 +86,10 @@ func TestGetByHelperUserIDWithUserData(t *testing.T) {
 	createDefaultPost(1, 2)
 
 	var b Behavior
-	postsWithUser, err := b.GetByHelperUserIDWithUserData("1")
+	pointssWithUser, err := b.GetByHelperUserIDWithUserData("1")
 	assert.Equal(t, nil, err)
-	assert.Equal(t, 1, len(postsWithUser))
-	assert.NotEqual(t, "", postsWithUser[0].User.Name)
+	assert.Equal(t, 1, len(pointsWithUser))
+	assert.NotEqual(t, "", pointsWithUser[0].User.Name)
 }
 
 func TestValidCreateModel(t *testing.T) {
