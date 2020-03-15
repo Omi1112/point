@@ -1,0 +1,59 @@
+version: '3'
+services:
+  post:
+    tty: true
+    # links:
+    #   - mysql
+    image: zemisemi/gin-template
+    working_dir: /go/src/github.com/SeijiOmi/posts-service
+    # entrypoint:
+    #   - dockerize
+    #   - -timeout
+    #   - 60s
+    #   - -wait
+    #   - tcp://mysql:3306
+    # command: gin -i --all run main.go
+    # build:
+    #   context: .
+    #   dockerfile: ./docker/api/Dockerfile
+    ports:
+      - "9000:9000"
+    volumes:
+      - .:/go/src/github.com/SeijiOmi/posts-service
+    environment:
+      DB_USER: root
+      DB_PASSWORD: password
+      DB_NAME: sample
+      DB_ADDRESS: post-db:3306
+      USER_URL: http://user:8080
+    networks:
+      - my_network
+  post-db:
+    build: ./docker/db
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: sample
+    # hostname: mysql
+    ports:
+      - "23306:3306"
+    volumes:
+      - ./docker/db/conf.d/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./logs:/var/log/mysql
+    networks:
+      - my_network
+  point-mock-user:
+    build: ./docker/json-server
+    ports:
+      - '3020:3000'
+    volumes:
+      - ./docker/json-server/:/data/
+    command: json-server -w db.json --routes route.json -m middleware.js --host 0.0.0.0
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    external: true
