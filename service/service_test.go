@@ -15,7 +15,7 @@ import (
 */
 
 var client = new(http.Client)
-var postDefault = entity.Post{Body: "test", Point: 100}
+var pointDefault = entity.Point{Number: 100}
 var tmpBaseUserURL string
 
 // テストを統括するテスト時には、これが実行されるイメージでいる。
@@ -47,21 +47,10 @@ func teardown() {
 	ここからが個別のテスト実装
 */
 
-func TestGetAll(t *testing.T) {
-	initPostTable()
-	createDefaultPost(1, 0)
-	createDefaultPost(1, 0)
-
-	var b Behavior
-	points, err := b.GetAll()
-	assert.Equal(t, err, nil)
-	assert.Equal(t, len(points), 2)
-}
-
 func TestGetByHelperUserID(t *testing.T) {
 	initPostTable()
-	createDefaultPost(1, 1)
-	createDefaultPost(1, 2)
+	createDefaultPoint(1)
+	createDefaultPoint(1)
 
 	var b Behavior
 	points, err := b.GetByHelperUserID("1")
@@ -69,50 +58,17 @@ func TestGetByHelperUserID(t *testing.T) {
 	assert.Equal(t, 1, len(points))
 }
 
-func TestAttachUserData(t *testing.T) {
-	initPostTable()
-	post := createDefaultPost(1, 0)
-	var points []entity.Post
-	points = append(points, post)
-
-	pointsWithUser, err := attachUserData(points)
-	assert.Equal(t, nil, err)
-	assert.NotEqual(t, "", pointsWithUser[0].User.Name)
-}
-
-func TestGetByHelperUserIDWithUserData(t *testing.T) {
-	initPostTable()
-	createDefaultPost(1, 1)
-	createDefaultPost(1, 2)
-
-	var b Behavior
-	pointssWithUser, err := b.GetByHelperUserIDWithUserData("1")
-	assert.Equal(t, nil, err)
-	assert.Equal(t, 1, len(pointsWithUser))
-	assert.NotEqual(t, "", pointsWithUser[0].User.Name)
-}
-
-func TestValidCreateModel(t *testing.T) {
-	var b Behavior
-	post, err := b.CreateModel(postDefault, "testToken")
-
-	assert.Equal(t, nil, err)
-	assert.Equal(t, postDefault.Body, post.Body)
-	assert.Equal(t, postDefault.Point, post.Point)
-	assert.NotEqual(t, uint(0), post.UserID)
-}
-
-func createDefaultPost(userID uint, helpserUserID uint) entity.Post {
+func createDefaultPoint(userID uint) entity.Point {
 	db := db.GetDB()
-	post := postDefault
-	post.UserID = userID
-	post.HelperUserID = helpserUserID
-	db.Create(&post)
-	return post
+	point := pointDefault
+	point.UserID = userID
+
+	db.Create(&point)
+	return point
 }
 
 func initPostTable() {
 	db := db.GetDB()
-	var u entity.Post
+	var u entity.Point
 	db.Delete(&u)
 }
