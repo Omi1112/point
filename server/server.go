@@ -48,7 +48,7 @@ func router() *gin.Engine {
 
 	h := r.Group("/sum")
 	{
-		h.GET("/:id", controller.HelperShow)
+		h.GET("/:id", controller.Sum)
 	}
 
 	return r
