@@ -44,15 +44,20 @@ func (b Behavior) CreateModel(inputPoint entity.Point, token string) (entity.Poi
 }
 
 // GetSumNumberByUserID ユーザIDを元にポイント所持数を取得する。
-func (b Behavior) GetSumNumberByUserID(id string) (entity.Point, error) {
+func (b Behavior) GetSumNumberByUserID(id string) (int, error) {
 	db := db.GetDB()
-	var u entity.Point
+	var total int
 
-	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
-		return u, err
+	err := db.Table("points").
+		Select("sum(number) as total").
+		Where("user_id = ?", id).
+		Group("user_id").Row().
+		Scan(&total)
+	if err != nil {
+		return 0, err
 	}
 
-	return u, nil
+	return total, nil
 }
 
 func getUserIDByToken(token string) (int, error) {

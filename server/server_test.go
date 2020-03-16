@@ -10,6 +10,7 @@ import (
 
 	"github.com/SeijiOmi/points-service/db"
 	"github.com/SeijiOmi/points-service/entity"
+	"github.com/jmcvetta/napping"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,7 +20,7 @@ import (
 
 var client = new(http.Client)
 var testServer *httptest.Server
-var postDefault = entity.Post{Body: "test", Point: 100}
+var pointDefault = entity.Point{Number: 100}
 var tmpBaseUserURL string
 
 // テストを統括するテスト時には、これが実行されるイメージでいる。
@@ -35,8 +36,9 @@ func TestMain(m *testing.M) {
 // テスト実施前共通処理
 func setup() {
 	tmpBaseUserURL = os.Getenv("USER_URL")
-	os.Setenv("USER_URL", "http://post-mock-user:3000")
+	os.Setenv("USER_URL", "http://point-mock-user:3000")
 	db.Init()
+	initPointTable()
 	router := router()
 	testServer = httptest.NewServer(router)
 }
@@ -44,7 +46,7 @@ func setup() {
 // テスト実施後共通処理
 func teardown() {
 	testServer.Close()
-	initPostTable()
+	initPointTable()
 	db.Close()
 	os.Setenv("USER_URL", tmpBaseUserURL)
 }
@@ -53,49 +55,64 @@ func teardown() {
 	ここからが個別のテスト実装
 */
 
-func TestPostCreate(t *testing.T) {
-	inputPost := struct {
-		Body  string `json:"body"`
-		Point uint   `json:"point"`
-		Token string `json:"token"`
+func TestPointsPost(t *testing.T) {
+	inputPoint := struct {
+		Number int    `json:"number"`
+		Token  string `json:"token"`
 	}{
-		"tests",
 		100,
-		"tests",
+		"testToken",
 	}
-	input, _ := json.Marshal(inputPost)
+	input, _ := json.Marshal(inputPoint)
 	resp, _ := http.Post(testServer.URL+"/points", "application/json", bytes.NewBuffer(input))
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 }
 
-func TestPostCreateNumericErrValid(t *testing.T) {
-	inputPost := struct {
-		Body  string `json:"body"`
-		Point string `json:"point"`
-	}{
-		"tests",
-		"tests",
-	}
-	input, _ := json.Marshal(inputPost)
-	resp, _ := http.Post(testServer.URL+"/points", "application/json", bytes.NewBuffer(input))
-	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+func TestPointsGetByUserID(t *testing.T) {
+	response := []entity.Point{}
+	error := struct {
+		Error string
+	}{}
+
+	initPointTable()
+	createDefaultPoint(1)
+	createDefaultPoint(1)
+
+	resp, err := napping.Get(testServer.URL+"/points/1", nil, &response, &error)
+	assert.Equal(t, nil, err)
+	assert.Equal(t, http.StatusOK, resp.Status())
+	assert.Equal(t, 2, len(response))
 }
 
-func TestPostCreateMinusErrValid(t *testing.T) {
-	inputPost := struct {
-		Body  string `json:"body"`
-		Point int    `json:"point"`
-	}{
-		"tests",
-		-1,
-	}
-	input, _ := json.Marshal(inputPost)
-	resp, _ := http.Post(testServer.URL+"/points", "application/json", bytes.NewBuffer(input))
-	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+func TestSumGetByUserID(t *testing.T) {
+	response := struct {
+		Total int
+	}{}
+	error := struct {
+		Error string
+	}{}
+
+	initPointTable()
+	createDefaultPoint(1)
+	createDefaultPoint(1)
+
+	resp, err := napping.Get(testServer.URL+"/sum/1", nil, &response, &error)
+	assert.Equal(t, nil, err)
+	assert.Equal(t, http.StatusOK, resp.Status())
+	assert.Equal(t, 200, response.Total)
 }
 
-func initPostTable() {
+func createDefaultPoint(userID uint) entity.Point {
 	db := db.GetDB()
-	var u entity.Post
+	point := pointDefault
+	point.UserID = userID
+
+	db.Create(&point)
+	return point
+}
+
+func initPointTable() {
+	db := db.GetDB()
+	var u entity.Point
 	db.Delete(&u)
 }

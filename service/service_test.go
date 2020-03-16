@@ -31,15 +31,15 @@ func TestMain(m *testing.M) {
 // テスト実施前共通処理
 func setup() {
 	tmpBaseUserURL = os.Getenv("USER_URL")
-	os.Setenv("USER_URL", "http://post-mock-user:3000")
+	os.Setenv("USER_URL", "http://point-mock-user:3000")
 	db.Init()
-	initPostTable()
+	initPointTable()
 }
 
 // テスト実施後共通処理
 func teardown() {
 	os.Setenv("USER_URL", tmpBaseUserURL)
-	initPostTable()
+	initPointTable()
 	db.Close()
 }
 
@@ -47,15 +47,57 @@ func teardown() {
 	ここからが個別のテスト実装
 */
 
-func TestGetByHelperUserID(t *testing.T) {
-	initPostTable()
+func TestGetByUserID(t *testing.T) {
+	initPointTable()
 	createDefaultPoint(1)
-	createDefaultPoint(1)
+	createDefaultPoint(2)
 
 	var b Behavior
-	points, err := b.GetByHelperUserID("1")
+	points, err := b.GetByUserID("1")
 	assert.Equal(t, nil, err)
 	assert.Equal(t, 1, len(points))
+}
+
+func TestCreateModel(t *testing.T) {
+	initPointTable()
+	inputPoint := pointDefault
+
+	var b Behavior
+	point, err := b.CreateModel(inputPoint, "testToken")
+	assert.Equal(t, nil, err)
+	assert.NotEqual(t, 0, point.ID)
+	assert.NotEqual(t, 0, point.UserID)
+	assert.Equal(t, pointDefault.Number, point.Number)
+}
+
+func TestGetSumNumberByUserID(t *testing.T) {
+	initPointTable()
+	createDefaultPoint(1)
+	createDefaultPoint(1)
+	createDefaultPoint(1)
+	createDefaultPoint(2)
+
+	db := db.GetDB()
+	point := pointDefault
+	point.UserID = 1
+	point.Number = -100
+	db.Create(&point)
+
+	var b Behavior
+	total, err := b.GetSumNumberByUserID("1")
+	assert.Equal(t, nil, err)
+	assert.Equal(t, 200, total)
+}
+
+func TestGetSumNumberByUserIDUnknownUserID(t *testing.T) {
+	initPointTable()
+	createDefaultPoint(1)
+	createDefaultPoint(2)
+
+	var b Behavior
+	total, err := b.GetSumNumberByUserID("3")
+	assert.NotEqual(t, nil, err)
+	assert.Equal(t, 0, total)
 }
 
 func createDefaultPoint(userID uint) entity.Point {
@@ -67,7 +109,7 @@ func createDefaultPoint(userID uint) entity.Point {
 	return point
 }
 
-func initPostTable() {
+func initPointTable() {
 	db := db.GetDB()
 	var u entity.Point
 	db.Delete(&u)

@@ -55,11 +55,17 @@ func Sum(c *gin.Context) {
 	var b service.Behavior
 	p, err := b.GetSumNumberByUserID(id)
 
+	response := struct {
+		Total int
+	}{
+		p,
+	}
+
 	if err != nil {
 		c.AbortWithStatus(404)
 		fmt.Println(err)
 	} else {
-		c.JSON(200, p)
+		c.JSON(200, response)
 	}
 }
 
