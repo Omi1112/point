@@ -5,16 +5,15 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/gin-gonic/gin"
-
 	"github.com/SeijiOmi/points-service/entity"
 	"github.com/SeijiOmi/points-service/service"
+	"github.com/gin-gonic/gin"
 )
 
 // Create action: POST /points
 func Create(c *gin.Context) {
-	var inputPost entity.Post
-	if err := bindJSON(c, &inputPost); err != nil {
+	var inputPoint entity.Point
+	if err := bindJSON(c, &inputPoint); err != nil {
 		return
 	}
 	type tokenStru struct {
@@ -26,13 +25,13 @@ func Create(c *gin.Context) {
 	}
 
 	var b service.Behavior
-	createdPost, err := b.CreateModel(inputPost, token.Token)
+	createdPoint, err := b.CreateModel(inputPoint, token.Token)
 
 	if err != nil {
 		c.AbortWithStatus(400)
 		fmt.Println(err)
 	} else {
-		c.JSON(201, createdPost)
+		c.JSON(201, createdPoint)
 	}
 }
 
@@ -40,7 +39,7 @@ func Create(c *gin.Context) {
 func Show(c *gin.Context) {
 	id := c.Params.ByName("id")
 	var b service.Behavior
-	p, err := b.GetByID(id)
+	p, err := b.GetByUserID(id)
 
 	if err != nil {
 		c.AbortWithStatus(404)
@@ -54,7 +53,7 @@ func Show(c *gin.Context) {
 func Sum(c *gin.Context) {
 	id := c.Params.ByName("id")
 	var b service.Behavior
-	p, err := b.GetByID(id)
+	p, err := b.GetSumNumberByUserID(id)
 
 	if err != nil {
 		c.AbortWithStatus(404)

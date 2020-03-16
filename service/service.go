@@ -10,49 +10,43 @@ import (
 	"github.com/jmcvetta/napping"
 )
 
-// Behavior 投稿サービスを提供するメソッド群
+// Behavior ポイントサービスを提供するメソッド群
 type Behavior struct{}
 
-// User オブジェクト構造
-type User struct {
-	id   int
-	name string
-}
-
-// GetByHelperUserID 投稿情報にユーザ情報を紐づけて取得
-func (b Behavior) GetByHelperUserID(userID string) ([]entity.Post, error) {
+// GetByUserID ユーザIDを元にポイント情報一覧を取得する。
+func (b Behavior) GetByUserID(userID string) ([]entity.Point, error) {
 	db := db.GetDB()
-	var post []entity.Post
+	var point []entity.Point
 
-	if err := db.Where("helper_user_id = ?", userID).Find(&post).Error; err != nil {
-		return post, err
+	if err := db.Where("user_id = ?", userID).Find(&point).Error; err != nil {
+		return point, err
 	}
 
-	return post, nil
+	return point, nil
 }
 
-// CreateModel 投稿情報の生成
-func (b Behavior) CreateModel(inputPost entity.Post, token string) (entity.Post, error) {
+// CreateModel ポイント情報の登録
+func (b Behavior) CreateModel(inputPoint entity.Point, token string) (entity.Point, error) {
 	userID, err := getUserIDByToken(token)
 	if err != nil {
-		return inputPost, err
+		return inputPoint, err
 	}
 
-	createPost := inputPost
-	createPost.UserID = uint(userID)
+	createPoint := inputPoint
+	createPoint.UserID = uint(userID)
 	db := db.GetDB()
 
-	if err := db.Create(&createPost).Error; err != nil {
-		return createPost, err
+	if err := db.Create(&createPoint).Error; err != nil {
+		return createPoint, err
 	}
 
-	return createPost, nil
+	return createPoint, nil
 }
 
-// GetByID IDを元に投稿1件を取得
-func (b Behavior) GetByID(id string) (entity.Post, error) {
+// GetSumNumberByUserID ユーザIDを元にポイント所持数を取得する。
+func (b Behavior) GetSumNumberByUserID(id string) (entity.Point, error) {
 	db := db.GetDB()
-	var u entity.Post
+	var u entity.Point
 
 	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
 		return u, err
