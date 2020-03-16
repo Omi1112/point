@@ -24,11 +24,11 @@ services:
       DB_USER: root
       DB_PASSWORD: password
       DB_NAME: sample
-      DB_ADDRESS: post-db:3306
+      DB_ADDRESS: point-db:3306
       USER_URL: http://user:8080
     networks:
       - my_network
-  post-db:
+  point-db:
     build: ./docker/db
     image: mysql:8.0
     restart: always
