@@ -42,18 +42,13 @@ func router() *gin.Engine {
 
 	p := r.Group("/points")
 	{
-		p.GET("", controller.Index)
 		p.GET("/:id", controller.Show)
 		p.POST("", controller.Create)
-		p.PUT("/:id", controller.Update)
-		p.DELETE("/:id", controller.Delete)
 	}
 
-	h := r.Group("/helper")
+	h := r.Group("/sum")
 	{
-		h.GET("/:id", controller.HelperShow)
-		h.POST("", controller.SetHelpUser)
-		h.DELETE("/:id", controller.TakeHelpUser)
+		h.GET("/:id", controller.Sum)
 	}
 
 	return r

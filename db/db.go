@@ -47,5 +47,5 @@ func Close() {
 }
 
 func autoMigration() {
-	db.AutoMigrate(&entity.Post{})
+	db.AutoMigrate(&entity.Point{})
 }
