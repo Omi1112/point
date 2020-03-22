@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: point-db
+spec:
+  selector:
+    app: point-db
+  ports:
+  - port: 3306
+    targetPort: 3306

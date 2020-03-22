@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: point
+  labels:
+    app: point
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: point
+  template:
+    metadata:
+      labels:
+        app: point
+    spec:
+      containers:
+      - name: point
+        image: zemisemi/point
+        ports:
+        - containerPort: 9000
+        command:
+          - sh
+          - -c
+          - go run main.go
+        env:
+          - name: DB_USER
+            value: "root"
+          - name: DB_PASSWORD
+            value: "password"
+          - name: DB_NAME
+            value: "sample"
+          - name: DB_ADDRESS
+            value: "point-db:3306"
+          - name: USER_URL
+            value: "http://user"
