@@ -15,7 +15,7 @@ import (
 */
 
 var client = new(http.Client)
-var pointDefault = entity.Point{Number: 100}
+var pointDefault = entity.Point{Number: 100, Comment: "testComment"}
 var tmpBaseUserURL string
 
 // テストを統括するテスト時には、これが実行されるイメージでいる。
@@ -68,6 +68,7 @@ func TestCreateModel(t *testing.T) {
 	assert.NotEqual(t, 0, point.ID)
 	assert.NotEqual(t, 0, point.UserID)
 	assert.Equal(t, pointDefault.Number, point.Number)
+	assert.Equal(t, pointDefault.Comment, point.Comment)
 }
 
 func TestGetSumNumberByUserID(t *testing.T) {
