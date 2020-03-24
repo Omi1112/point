@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 
 	"github.com/SeijiOmi/points-service/entity"
 	"github.com/SeijiOmi/points-service/service"
@@ -28,10 +29,10 @@ func Create(c *gin.Context) {
 	createdPoint, err := b.CreateModel(inputPoint, token.Token)
 
 	if err != nil {
-		c.AbortWithStatus(400)
+		c.AbortWithStatus(http.StatusBadRequest)
 		fmt.Println(err)
 	} else {
-		c.JSON(201, createdPoint)
+		c.JSON(http.StatusCreated, createdPoint)
 	}
 }
 
@@ -42,10 +43,10 @@ func Show(c *gin.Context) {
 	p, err := b.GetByUserID(id)
 
 	if err != nil {
-		c.AbortWithStatus(404)
+		c.AbortWithStatus(http.StatusNotFound)
 		fmt.Println(err)
 	} else {
-		c.JSON(200, p)
+		c.JSON(http.StatusOK, p)
 	}
 }
 
@@ -62,10 +63,10 @@ func Sum(c *gin.Context) {
 	}
 
 	if err != nil {
-		c.AbortWithStatus(404)
+		c.AbortWithStatus(http.StatusNotFound)
 		fmt.Println(err)
 	} else {
-		c.JSON(200, response)
+		c.JSON(http.StatusOK, response)
 	}
 }
 
@@ -75,7 +76,7 @@ func bindJSON(c *gin.Context, data interface{}) error {
 	b := string(buf[0:n])
 	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer([]byte(b)))
 	if err := c.BindJSON(data); err != nil {
-		c.AbortWithStatus(400)
+		c.AbortWithStatus(http.StatusBadRequest)
 		fmt.Println("bind JSON err")
 		fmt.Println(err)
 		return err
