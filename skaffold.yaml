@@ -1,0 +1,13 @@
+apiVersion: skaffold/v1beta7
+kind: Config
+build:
+  artifacts:
+  - image: zemisemi/point
+    context: .
+  local:
+    push: true
+
+deploy:
+  kubectl:
+    manifests:
+      - point-*
