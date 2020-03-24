@@ -57,10 +57,12 @@ func teardown() {
 
 func TestPointsPost(t *testing.T) {
 	inputPoint := struct {
-		Number int    `json:"number"`
-		Token  string `json:"token"`
+		Number  int    `json:"number"`
+		Comment string `json:"comment"`
+		Token   string `json:"token"`
 	}{
 		100,
+		"testComment",
 		"testToken",
 	}
 	input, _ := json.Marshal(inputPoint)
