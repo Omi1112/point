@@ -2,7 +2,7 @@ version: '3'
 services:
   point:
     tty: true
-    image: zemisemi/gin-template
+    build: ./docker/api
     working_dir: /go/src/github.com/SeijiOmi/points-service
     ports:
       - "9000:9000"
