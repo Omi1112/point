@@ -1,22 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: point-db
+  name: point-db-deployment
   labels:
-    app: point-db
+    back: point-db
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: point-db
+      back: ap
   template:
     metadata:
       labels:
-        app: point-db
+        back: ap
     spec:
-      hostname: point-db
       containers:
-      - name: mysql
+      - name: point-db
         image: mysql:8.0
         ports:
         - containerPort: 3306
