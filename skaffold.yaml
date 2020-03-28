@@ -10,4 +10,4 @@ build:
 deploy:
   kubectl:
     manifests:
-      - point-*
+      - point-deployment.yaml
