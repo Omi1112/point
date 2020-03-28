@@ -4,7 +4,7 @@ metadata:
   name: point-db
 spec:
   selector:
-    app: point-db
+    back: point-db
   ports:
   - port: 3306
     targetPort: 3306

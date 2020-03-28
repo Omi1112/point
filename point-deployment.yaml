@@ -1,24 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: point
+  name: point-deployment
   labels:
-    app: point
+    app: ap
+    back: point
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: point
+      app: ap
+      back: point
   template:
     metadata:
       labels:
-        app: point
+        app: ap
+        back: point
     spec:
       containers:
       - name: point
         image: zemisemi/point
         ports:
-        - containerPort: 9000
+        - containerPort: 8090
         command:
           - sh
           - -c
@@ -31,6 +34,6 @@ spec:
           - name: DB_NAME
             value: "sample"
           - name: DB_ADDRESS
-            value: "point-db:3306"
+            value: "post-db:3306"
           - name: USER_URL
             value: "http://user"
